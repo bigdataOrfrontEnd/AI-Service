@@ -1,8 +1,12 @@
-import { log } from 'console';
 import express, { Request, Response } from 'express';
-
+import { validateFields } from '../utils/validate';
+import { errorResponse } from '../utils/apiResponse';
+import { chatRules } from '../utils/rules';
 const router = express.Router();
-
+interface ChatRequestBody {
+  message: string;
+  sessionId: string;
+}
 /**
  * @swagger
  * /chat:
@@ -34,17 +38,16 @@ const router = express.Router();
  *                 response:
  *                   type: string
  */
-router.post('/chat', async (req:any, res: any) => {
-  const { input, sessionId } = req.body;
-  console.log(req.body);
-  
-  if (!input || !sessionId) {
-    return res.status(400).json({ error: 'Missing input or sessionId' });
+router.post('/chat', async (req:Request<{},{},ChatRequestBody>, res: any) => {
+  const errors = validateFields(req.body, chatRules);
+  if (Object.keys(errors).length > 0) {
+    return errorResponse(res, 400, '参数校验失败', errors);
   }
-
+  const { message, sessionId } = req.body;
+  console.log(req.body);
   try {
     // const response = await getChatResponse(input, sessionId);
-    res.json({ response: "hellow" });
+    res.json({ message: `你传入的  是：${message}` });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
