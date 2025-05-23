@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { validateFields } from '../utils/validate';
 import { errorResponse } from '../utils/apiResponse';
 import { chatRules } from '../utils/rules';
+import { getChatResponse } from '../services/chatService';
 const router = express.Router();
 interface ChatRequestBody {
   message: string;
@@ -44,19 +45,13 @@ router.post('/chat', async (req:Request<{},{},ChatRequestBody>, res: any) => {
     return errorResponse(res, 400, '参数校验失败', errors);
   }
   const { message, sessionId } = req.body;
-  console.log(req.body);
   try {
-    // const response = await getChatResponse(input, sessionId);
-    res.json({ message: `你传入的  是：${message}` });
+    const response = await getChatResponse(message, sessionId);
+    res.json({ message: response });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-router.get('/test',async (req: Request, res: Response) => {
-  console.log(req);
-  res.send('测试接口 OK');
-  
-})
 
 export default router;

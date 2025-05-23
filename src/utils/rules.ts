@@ -9,9 +9,4 @@ export const chatRules: FieldRules = {
   
 };
 
-export const loginRules: FieldRules = {
-  username: { required: true, type: 'string' },
-  password: { required: true, type: 'string' },
-};
-
 // 以后添加更多接口规则…
