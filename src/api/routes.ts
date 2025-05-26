@@ -40,10 +40,6 @@ interface ChatRequestBody {
  *                   type: string
  */
 router.post('/chat', async (req:Request<{},{},ChatRequestBody>, res: any) => {
-  // const errors = validateFields(req.body, chatRules);
-  // if (Object.keys(errors).length > 0) {
-  //   return errorResponse(res, 400, '参数校验失败', errors);
-  // }
   const { message, sessionId } = req.body;
   if(!message){
     return res.status(400).json({ error: 'Message is required' });
