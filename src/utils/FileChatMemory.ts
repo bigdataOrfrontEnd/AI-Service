@@ -1,33 +1,28 @@
 import { BufferMemory } from "langchain/memory";
-import { BaseMessage, Message } from "./Message";
+// import { BaseMessage, Message } from "./Message";
+import {BaseMessage}from"@langchain/core/messages"
 import * as fs from "fs/promises";
 
 export class FileChatMemory extends BufferMemory {
   private filePath: string;
-
   constructor(filePath: string) {
     super();
     this.filePath = filePath;
   }
-
    // 从文件加载历史消息
    async loadMemoryVariables(): Promise<Record<string, any>> {
     try {
       const data = await fs.readFile(this.filePath, "utf-8");
       const messagesData: BaseMessage[] = JSON.parse(data);
-
       // 清空当前历史
       await this.chatHistory.clear();
-
       // 逐条添加消息
       for (const msg of messagesData) {
-        // 这里假设 chatHistory 有 addMessage 方法
-        await this.chatHistory.addMessage(new Message(msg.role, msg.content));
+        // Method to add user and AI messages to the chat history in sequence.
+        await this.chatHistory.addMessage();
       }
     } catch (error) {
-      // 文件不存在或解析失败时，忽略
     }
-
     // 返回历史消息
     const messages = await this.chatHistory.getMessages();
     return { history: messages };
